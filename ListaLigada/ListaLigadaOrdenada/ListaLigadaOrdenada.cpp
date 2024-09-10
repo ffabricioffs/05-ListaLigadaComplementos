@@ -8,6 +8,7 @@ struct NO {
 };
 
 NO* primeiro = NULL;
+NO* ultimo = NULL;
 
 // headers
 void menu();
@@ -125,18 +126,45 @@ void inserirElemento()
 	cin >> novo->valor;
 	novo->prox = NULL;
 
+
 	if (primeiro == NULL)
 	{
 		primeiro = novo;
+		ultimo = novo;
 	}
-	else
-	{
-		// procura o final da lista
-		NO* aux = primeiro;
-		while (aux->prox != NULL) {
-			aux = aux->prox;
+
+	else {
+		// Impedi números duplicados inserindo a função posicaoElemento.
+
+		NO* aux = posicaoElemento(novo->valor);
+		if (aux != NULL) {
+			cout << "Elemento existente, digite outro numero. \n";
+			return;
 		}
-		aux->prox = novo;
+
+		if (novo->valor < primeiro->valor)
+		{
+			NO* aux = novo;
+			aux->prox = primeiro;
+			primeiro = novo;
+		}
+		else
+		{
+			NO* aux = primeiro;
+			while ((aux->prox != NULL) && (aux->prox->valor < novo->valor)) {
+				aux = aux->prox;
+			}
+
+			if (aux->prox == NULL) {
+				aux->prox = novo;
+			}
+			else {
+				ultimo = aux->prox;
+				aux->prox = novo;
+				novo->prox = ultimo;
+			}
+		}
+
 	}
 }
 
@@ -150,4 +178,14 @@ void buscarElemento()
 
 }
 
+NO* posicaoElemento(int numero) {
+	NO* aux = primeiro;
+	while (aux != NULL) {
+		if (aux->valor == numero) {
+			break;
+		}
+		aux = aux->prox;
+	}
+	return aux;
+}
 
