@@ -18,7 +18,7 @@ void exibirElementos();
 void inserirElemento();
 void excluirElemento();
 void buscarElemento();
-NO* posicaoElemento(int numero);
+NO* buscarElementoFunc(int busca);
 //--------------------------
 
 
@@ -136,9 +136,10 @@ void inserirElemento()
 	else {
 		// Impedi números duplicados inserindo a função posicaoElemento.
 
-		NO* aux = posicaoElemento(novo->valor);
+		NO* aux = buscarElementoFunc(novo->valor);
 		if (aux != NULL) {
 			cout << "Elemento existente, digite outro numero. \n";
+			free(novo);
 			return;
 		}
 
@@ -170,22 +171,69 @@ void inserirElemento()
 
 void excluirElemento()
 {
+	if (primeiro == NULL) {
+		cout << "A lista esta vazia. Insira elementos primeiro. \n";
+		return;
+	}
+
+	int elementoParaExcluir;
+	cout << "Digite o valor do elemento a ser excluido: \n";
+	cin >> elementoParaExcluir;
+
+	NO* aux = buscarElementoFunc(elementoParaExcluir);
+	if (aux == NULL) {
+		cout << "Elemento inexistente. \n";
+		return;
+	}
+	else if (primeiro->valor == elementoParaExcluir) {
+		aux = primeiro;
+		primeiro = primeiro->prox;
+		free(aux);
+		cout << "Elemento excluido. \n";
+	}
+	else {
+
+		aux = primeiro;
+		NO* anterior = NULL;
+		while (aux != NULL && aux->valor != elementoParaExcluir) {
+			anterior = aux;
+			aux = aux->prox;
+		}
+
+		anterior->prox = aux->prox;
+		free(aux);
+		cout << "Elemento excluido. \n";
+	}
 
 }
+
 
 void buscarElemento()
 {
+	int elementoParaBusca;
+
+	cout << "Digite o elemento a ser buscado: \n";
+	cin >> elementoParaBusca;
+
+	NO* aux = buscarElementoFunc(elementoParaBusca);
+	if (aux == NULL) {
+		cout << "Elemento não encontrado. \n";
+	}
+	else {
+		cout << "Elemento encontrado. \n";
+	}
 
 }
 
-NO* posicaoElemento(int numero) {
+NO* buscarElementoFunc(int buscar) {
 	NO* aux = primeiro;
-	while (aux != NULL) {
-		if (aux->valor == numero) {
-			break;
+	while ((aux != NULL) && (aux->valor <= buscar)) {
+		if (aux->valor == buscar) {
+			return aux;
 		}
+
 		aux = aux->prox;
 	}
-	return aux;
+	return NULL;
 }
 
